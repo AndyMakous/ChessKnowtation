@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        #wrapper {
+            display: flex;
+        }
+
+        #config {
+            background-color: beige
+        }
+
+        #stats {
+            display: block;
+            position: relative;
+        }
+
+        #chessboard,
+        #overlay {
+            position: absolute;
+            margin: 10vmax;
+            pointer-events: none;
+            background-color: white;
+        }
+
+        #rankOL {
+            position: absolute;
+            margin-top: 0px;
+            width: 400px;
+            height: 50px;
+            background-color: rgba(220, 220, 20, .55);
+        }
+
+        #fileOL {
+            position: absolute;
+            margin-left: 0px;
+            width: 50px;
+            height: 400px;
+            background-color: rgba(220, 220, 20, .55);
+        }
+
+        #overlay {
+            visibility: hidden;
+        }
+
+        #chessboard>div {
+            pointer-events: none;
+        }
+
+        .whiteSquare,
+        .blackSquare {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            pointer-events: all;
+            font-size: 15;
+        }
+
+        .blackSquare {
+            background-color: blue;
+            color: white;
+        }
+
+        .whiteSquare {
+            background-color: red;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="game">
+            <div id="chessboard"></div>
+            <div id="overlay">
+                <div id="rankOL"></div>
+                <div id="fileOL"></div>
+            </div>
+        </div>
+        <span id="config">
+            <h1 id="current">Current: </h1>
+            <h1 id="score">0/0</h1>
+            <button id="start-stop">START</button>
+        </span>
+    </div>
+    <script src="SquareSniper.js"></script>
+</body>
+
+</html>

@@ -9,12 +9,57 @@
     Add timings for each move made
 */
 
-class Game {
+class Timer {
   constructor() {
+    this.timer = document.getElementById('timer');
+    this.startingTime = 80;
+    this.currentTime = -1;
+    this.minutes = -1;
+    this.seconds = -1;
+
+    this.timer.addEventListener('mouseenter', (event) => {
+      this.timer.style.backgroundColor = 'green';
+    });
+
+    this.timer.addEventListener('mouseleave', (event) => {
+      this.timer.style.backgroundColor = 'rgb(59, 0, 0)';
+    });
+
+    this.timer.addEventListener('click', (event) => {
+      if (!this.gamePlaying) {
+        this.start();
+      } else {
+        this.stop();
+      }
+    });
+  }
+
+  countdown() {
+    this.seconds = this.currentTime % 60;
+    this.minutes = Math.floor(this.currentTime / 60);
+    this.updateTimer();
+    this.currentTime--;
+  }
+
+  updateTimer() {
+    this.timer.innerText = this.minutes + ":" + this.seconds;
+  }
+
+  start() {
+    this.currentTime = this.startingTime;
+  }
+}
+
+class Game {
+  constructor(timer) {
     this.board = document.getElementById('chessboard');
     this.overlay = document.getElementById('overlay');
     this.prompter = document.getElementById('prompter');
     this.results = document.getElementById('results');
+    this.gametype = document.querySelector('input[name="gametype"]:checked').value;
+    this.timer = timer;
+    this.startingTime = 80;
+    this.currentTime = this.startingTime;
     this.gamePlaying = false;
     this.prompt = undefined;
     this.history = [];
@@ -33,11 +78,11 @@ class Game {
     };
 
     this.initialize();
+    this.start();
   }
 
   initialize() {
     // BOARD
-    console.log('Initializing board...');
     for (let i = 0; i < 8; i++) {
       const boardlayer = document.createElement('div');
       for (let j = 0; j < 8; j++) {
@@ -61,33 +106,40 @@ class Game {
 
     // LISTENERS
     // Gets square beneath cursor
-    this.board.addEventListener('mouseover', (event) => {
-      this.overlayFile = event.target.getAttribute('file');
-      this.overlayRank = event.target.getAttribute('rank');
-      this.update();
-    }, true);
+    if (this.options.drawOverlay) {
+      this.board.addEventListener('mouseover', (event) => {
+        this.overlayFile = event.target.getAttribute('file');
+        this.overlayRank = event.target.getAttribute('rank');
+        this.update();
+      }, true);
 
-    this.board.addEventListener('mouseleave', (event) => {
-      this.overlay.style.visibility = 'hidden';
-    });
 
-    this.board.addEventListener('mouseenter', (event) => {
-      this.overlay.style.visibility = 'visible';
-    });
+      this.board.addEventListener('mouseleave', (event) => {
+        this.overlay.style.visibility = 'hidden';
+      });
+
+      this.board.addEventListener('mouseenter', (event) => {
+        this.overlay.style.visibility = 'visible';
+      });
+    }
 
     this.board.addEventListener('mousedown', (event) => {
       if (this.gamePlaying) {
         this.guess(event.target.getAttribute('rank'), this.files[event.target.getAttribute('file')]);
       }
     });
+  }
 
-    document.getElementById('start-stop').addEventListener('mouseup', (event) => {
-      if (!this.gamePlaying) {
-        this.start();
-      } else {
-        this.stop();
-      }
-    });
+  formatTimer() {
+    console.log("time: " + this.currentTime);
+    const seconds = this.currentTime % 60;
+    const minutes = Math.floor(this.currentTime / 60);
+    // console.log(`${this.startingTime}:${this.currentTime}`);
+    // console.log(`${minutes}:${seconds}`);
+    // minutes = minutes < 10 ? `0${minutes}` : minutes;
+    // seconds = seconds < 10 ? `0${seconds}` : seconds;
+    this.currentTime--;
+    this.timer.innerText = minutes + ":" + seconds;
   }
 
   drawRank() {
@@ -170,6 +222,10 @@ class Game {
   }
 
   start() {
+    console.log(this.startingTime);
+    console.log(this.currentTime);
+    // this.currentTime = this.startingTime;
+    setInterval(this.timer.countdown, 1000);
     this.gamePlaying = true;
     this.history = [];
     this.correctCount = 0;
@@ -187,7 +243,6 @@ class Game {
   buildResults() {
     let row; let prompt; let answer; let number;
     const table = document.getElementById('results-table');
-    console.log(table);
     for (let i = 0; i < this.history.length; i++) {
       row = table.insertRow(-1);
       number = row.insertCell(0)
@@ -215,10 +270,11 @@ class Game {
   }
 
   update() {
-    document.getElementById('rankOL').style.marginTop = `${400 - 50 * this.overlayRank}px`;
-    document.getElementById('fileOL').style.marginLeft = `${50 * this.overlayFile}px`;
+    document.getElementById('rankOL').style.marginTop = `${560 - 70 * this.overlayRank}px`;
+    document.getElementById('fileOL').style.marginLeft = `${70 * this.overlayFile}px`;
   }
 }
 
 
-const game = new Game();
+const timer = new Timer();
+const game = new Game(timer);

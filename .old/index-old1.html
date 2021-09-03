@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chess Square Practice</title>
+    <style type="text/css">
+        * {
+            margin: 0px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: rgb(37, 39, 39);
+        }
+
+        canvas {
+            /* display: block; */
+            position: relative;
+            /* margin: ; */
+
+            background: 0%;
+        }
+
+        #alert {
+            /* background-color: aquamarine; */
+            display: block;
+        }
+
+        #gameinfo {
+            display: block;
+            /* position: fixed; */
+            /* margin-right: 70%; */
+            color: deepskyblue;
+            background-color: darkslategrey;
+        }
+
+        #gameconfig {
+            display: block;
+            /* background-color: aliceblue; */
+            color: deepskyblue;
+        }
+
+        #gameinfo {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div id="gameconfig">
+        <span id="space">
+            <h2>Config</h2>
+            <input type="checkbox" name="squares" value="squares">Squares<br>
+            <input type="checkbox" name="ranks" value="ranks">Ranks<br>
+            <input type="checkbox" name="files" value="files">Files<br>
+        </span>
+        <span id="time">
+
+        </span>
+    </div> -->
+    <div id="gameinfo">
+        <h2>Current Square: </h2>
+    </div>
+    <button id="toggle" style="background-color: firebrick; color:gainsboro;">START</button>
+    <div>
+        <canvas id="base" style="z-index: 0"></canvas>
+        <canvas id="overlay" style="z-index: 1"></canvas>
+        <canvas id="alert" style="z-index: 2"></canvas>
+    </div>
+    <script src="SquareSpotter.js"></script>
+</body>
+
+</html>
