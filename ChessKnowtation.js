@@ -1,10 +1,12 @@
 /* eslint-disable no-plusplus */
 
 /* TODO
-  Clear table results
   Clean up page, center board
   Add alternate modes for rank and file
-
+  Square flashing
+  Generating entire sequence at start of game
+  Showing large overlay like how lichess does it
+  Refactor class to keep some things global
 */
 
 class Game {
@@ -14,13 +16,14 @@ class Game {
     this.started = false;
     this.current = undefined;
     this.allSquares = [];
-    this.total = 1;
+    this.total = 0;
     this.correct = 0;
     this.overlayRank = -1;
     this.overlayFile = -1;
     this.files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     this.drawNotation = false;
-    this.results = document.getElementById("results-table").firstElementChild;
+    this.results = [];
+    this.resultsTable = document.getElementById("results-table").firstElementChild;
     this.tableRow;
     this.overlayCheckbox = document.getElementsByName("overlay")[0];
 
@@ -64,7 +67,7 @@ class Game {
 
     this.board.addEventListener('mouseenter', (event) => {
       if (this.overlayCheckbox.checked){
-      this.overlay.style.visibility = 'visible';
+        this.overlay.style.visibility = 'visible';
       }
     });
 
@@ -85,26 +88,28 @@ class Game {
 
   next() {
     this.current = this.allSquares[Math.floor(Math.random() * 63)];
+    // Add row to table
     this.tableRow = document.createElement("tr");
     this.tableRow.setAttribute("correct", "guess");
     this.tableRow.insertCell(0);
     this.tableRow.insertCell(1);
     this.tableRow.insertCell(2);
-    this.tableRow.cells[0].innerText = this.total;
+    this.tableRow.cells[0].innerText = this.total+1;
     this.tableRow.cells[1].innerText = this.current;
-    this.results.append(this.tableRow);
+    this.resultsTable.append(this.tableRow);
+    this.results.push(this.tableRow);
     prompter.innerText = `Current: ${this.current}`;
   }
 
   guess(namedSquare) {
-    this.total++;
     if (namedSquare === this.current) {
       this.tableRow.setAttribute("correct", "true");
       this.correct++;
-    } else {
-      this.tableRow.setAttribute("correct", "false");
-      console.log('incorrect');
     }
+    else {
+      this.tableRow.setAttribute("correct", "false");
+    }
+    this.total++;
     score.innerText = `${this.correct}/${this.total}`;
     this.tableRow.cells[2].innerText = namedSquare;
     this.next();
@@ -112,18 +117,17 @@ class Game {
 
   start() {
     this.started = true;
-    this.correct = 0;
-    this.total = 1;
+    this.correct, this.total = 0;
     this.next();
     this.toggleText();
-    console.log(this.drawNotation);
     prompter.innerText = `Current: ${this.current}`;
+    // Clear results table
+    this.results.forEach(row => row.remove());
   }
 
   stop() {
     this.started = false;
     this.toggleText();
-    console.log(this.drawNotation);
     prompter.innerText = 'Game stopped.';
   }
 
